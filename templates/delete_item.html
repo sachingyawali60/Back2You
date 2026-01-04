@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Delete Item</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/my_item.css' %}">
+</head>
+<body>
+
+<section class="container">
+  <h1>Confirm Delete</h1>
+  <p>Are you sure you want to delete <strong>{{ item.title }}</strong>?</p>
+
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn delete">Yes, Delete</button>
+    <a href="{% url 'my_items' %}" class="btn">Cancel</a>
+  </form>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost & Found Portal</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    </head>
+    <body>
+
+    <!-- navbar.html - For Authenticated Users -->
+
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="logo">
+                <span>🔍</span>
+                <span>Back2You</span>
+            </a>
+
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                ☰
+            </button>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                
+                <!-- Browse Dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle">Browse</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'lost_items' %}">🔍 Lost Items</a></li>
+                        <li><a href="{% url 'found_items' %}">✨ Found Items</a></li>
+                    </ul>
+                </li>
+
+                <!-- My Activity Dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle">My Activity</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'my_item' %}">📦 My Posts</a></li>
+                        <li><a href="{% url 'my_claims' %}">📝 My Claims</a></li>
+                        <li><a href="{% url 'manage_claims' %}">⚙️ Manage Claims</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="{% url 'about' %}">About</a></li>
+
+                <li><a href="{% url 'add_item' %}" class="btn-post">+ Post Item</a></li>
+
+                <!-- User Profile Dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle user-profile">
+                        <div class="user-avatar">{{ user.username|slice:":1"|upper }}</div>
+                        <span>{{ user.username }}</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'profile' %}">👤 My Profile</a></li>
+                        <li><form action="{% url 'logout' %}" method="POST" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" style="background:none;border:none;cursor:pointer;">
+            🚪 Logout
+        </button>
+    </form></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="nav-overlay" id="navOverlay" onclick="toggleMobileMenu()"></div>
+
+    <script>
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const overlay = document.getElementById('navOverlay');
+            navLinks.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Mobile dropdown toggle
+        if (window.innerWidth <= 1024) {
+            document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.parentElement.classList.toggle('active');
+                });
+            });
+        }
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.dropdown-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    const navLinks = document.getElementById('navLinks');
+                    const overlay = document.getElementById('navOverlay');
+                    navLinks.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // Close menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const navLinks = document.getElementById('navLinks');
+                const overlay = document.getElementById('navOverlay');
+                navLinks.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        });
+    </script>
+
+
+    </body>
+    </html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile - Back2You</title>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+
+{% include 'navbar.html' %}
+
+    <div class="page-header">
+        <h1>
+            <span>👤</span>
+            <span>My Profile</span>
+        </h1>
+        <p>Manage your account settings and view your activity</p>
+    </div>
+
+    <div class="container">
+        <div class="profile-grid">
+            <!-- Profile Sidebar -->
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    {{ user.username|slice:":1"|upper }}
+                </div>
+                <h2 class="profile-username">{{ user.username }}</h2>
+                <p class="profile-email">{{ user.email }}</p>
+
+                <div class="profile-stats">
+                    <div class="stat-box">
+                        <div class="stat-number">{{ user.item.count }}</div>
+                        <div class="stat-label">Items Posted</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">{{ user.claim_set.count }}</div>
+                        <div class="stat-label">Claims Made</div>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <a href="{% url 'my_item' %}" class="action-btn action-btn-primary">
+                        📦 My Items
+                    </a>
+                    <a href="{% url 'my_claims' %}" class="action-btn action-btn-outline">
+                        📝 My Claims
+                    </a>
+                    <a href="{% url 'manage_claims' %}" class="action-btn action-btn-outline">
+                        ⚙️ Manage Claims
+                    </a>
+                    <a href="{% url 'add_item' %}" class="action-btn action-btn-outline">
+                        ➕ Post Item
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Form -->
+            <div>
+                <div class="form-card">
+                    <div class="form-header">
+                        <h2>Account Information</h2>
+                        <p>Update your personal details</p>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-content">
+                            💡 Your email is used for notifications and can help item owners contact you.
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="id_username" class="form-label">
+                                <span>👤</span>
+                                <span>Username</span>
+                            </label>
+                            {{ form.username }}
+                            <p class="form-help">Your public display name on Back2You</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_email" class="form-label">
+                                <span>📧</span>
+                                <span>Email Address</span>
+                            </label>
+                            {{ form.email }}
+                            <p class="form-help">We'll use this to notify you about claims and updates</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_first_name" class="form-label">
+                                <span>✏️</span>
+                                <span>First Name (Optional)</span>
+                            </label>
+                            {{ form.first_name }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_last_name" class="form-label">
+                                <span>✏️</span>
+                                <span>Last Name (Optional)</span>
+                            </label>
+                            {{ form.last_name }}
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-save">
+                                💾 Save Changes
+                            </button>
+                            <button type="reset" class="btn btn-cancel">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Activity Summary -->
+                <div class="activity-summary">
+                    <div class="activity-header">
+                        <span>📊</span>
+                        <span>Activity Overview</span>
+                    </div>
+                    <div class="activity-grid">
+                        <div class="activity-card">
+                            <div class="activity-icon">🔍</div>
+                            <div class="activity-number">{{ user.item.filter.count }}</div>
+                            <div class="activity-label">Lost Items</div>
+                        </div>
+                        <div class="activity-card">
+                            <div class="activity-icon">✨</div>
+                            <div class="activity-number">{{ user.item.filter.count }}</div>
+                            <div class="activity-label">Found Items</div>
+                        </div>
+                        <div class="activity-card">
+                            <div class="activity-icon">✅</div>
+                            <div class="activity-number">{{ user.item.filter.count }}</div>
+                            <div class="activity-label">Returned Items</div>
+                        </div>
+                        <div class="activity-card">
+                            <div class="activity-icon">🎯</div>
+                            <div class="activity-number">{{ user.claim_set.count }}</div>
+                            <div class="activity-label">Total Claims</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add proper classes to form fields
+        document.getElementById('id_username').className = 'form-input';
+        document.getElementById('id_email').className = 'form-input';
+        document.getElementById('id_first_name').className = 'form-input';
+        document.getElementById('id_last_name').className = 'form-input';
+    </script>
+</body>
+</html>

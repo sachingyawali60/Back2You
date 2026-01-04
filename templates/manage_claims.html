@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Claims - Back2You</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/manage_claims.css' %}">
+</head>
+<body>
+
+  <!-- Navbar -->
+  {% include 'navbar.html' %}
+  <!-- Page Header -->
+    <div class="page-header">
+        <h1>
+            <span>⚙️</span>
+            <span>Manage Claims</span>
+        </h1>
+        <p>Review and respond to claims on your posted items</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Statistics Bar -->
+        <div class="stats-bar">
+            <div class="stat-card pending">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-number" id="pendingCount">0</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            <div class="stat-card approved">
+                <div class="stat-icon">✅</div>
+                <div class="stat-number" id="approvedCount">0</div>
+                <div class="stat-label">Approved</div>
+            </div>
+            <div class="stat-card rejected">
+                <div class="stat-icon">❌</div>
+                <div class="stat-number" id="rejectedCount">0</div>
+                <div class="stat-label">Rejected</div>
+            </div>
+            <div class="stat-card returned">
+                <div class="stat-icon">🎉</div>
+                <div class="stat-number" id="returnedCount">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="tab-btn active" onclick="filterByStatus('all')">All Claims</button>
+            <button class="tab-btn" onclick="filterByStatus('pending')">⏳ Pending</button>
+            <button class="tab-btn" onclick="filterByStatus('approved')">✅ Approved</button>
+            <button class="tab-btn" onclick="filterByStatus('rejected')">❌ Rejected</button>
+            <button class="tab-btn" onclick="filterByStatus('returned')">🎉 Completed</button>
+        </div>
+
+        <!-- Claims Grid -->
+        <div class="claims-grid" id="claimsGrid">
+            {% for claim in claims %}
+                <div class="claim-card {{ claim.status }}" data-status="{{ claim.status }}">
+                    <span class="status-badge {{ claim.status }}">
+                        {% if claim.status == 'pending' %}⏳{% elif claim.status == 'approved' %}✅{% elif claim.status == 'rejected' %}❌{% else %}🎉{% endif %}
+                        {{ claim.status|capfirst }}
+                    </span>
+                    
+                    <div class="claim-header">
+                        <h3 class="item-title">{{ claim.item.title }}</h3>
+                    </div>
+                    
+                    <div class="claim-content">
+                        <div class="info-section">
+                            <div class="info-row claimant-highlight">
+                                <div class="info-icon">👤</div>
+                                <div class="info-content">
+                                    <div class="info-label">Claimant</div>
+                                    <div class="info-value">{{ claim.claimant.username }}</div>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-icon">📧</div>
+                                <div class="info-content">
+                                    <div class="info-label">Contact Email</div>
+                                    <div class="info-value">{{ claim.claimant.email|default:"Not provided" }}</div>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-icon">📅</div>
+                                <div class="info-content">
+                                    <div class="info-label">Claimed On</div>
+                                    <div class="info-value">{{ claim.created_at|date:"d M Y" }} ({{ claim.created_at|timesince }} ago)</div>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-icon">📍</div>
+                                <div class="info-content">
+                                    <div class="info-label">Item Location</div>
+                                    <div class="info-value">{{ claim.item.location }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if claim.message %}
+                        <div class="claim-message">
+                            <div class="claim-message-label">💬 Claimant's Message:</div>
+                            <div class="claim-message-text">"{{ claim.message }}"</div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if claim.status == 'pending' %}
+                        <div class="claim-actions">
+                            <a href="{% url 'update_claim_status' claim.id 'approved' %}" class="btn btn-approve" onclick="return confirm('Approve this claim? The claimant will be able to collect the item.')">
+                                ✅ Approve
+                            </a>
+                            <a href="{% url 'update_claim_status' claim.id 'rejected' %}" class="btn btn-reject" onclick="return confirm('Reject this claim? This action can be reversed later.')">
+                                ❌ Reject
+                            </a>
+                        </div>
+                    {% elif claim.status == 'approved' %}
+                        <div class="claim-actions">
+                            <a href="{% url 'mark_as_returned' claim.id %}" class="btn btn-returned" onclick="return confirm('Mark this item as returned? This will complete the process.')">
+                                🎉 Mark as Returned
+                            </a>
+                        </div>
+                    {% elif claim.status == 'returned' %}
+                        <div class="action-completed">
+                            ✅ Item successfully returned to {{ claim.claimant.username }}
+                        </div>
+                    {% else %}
+                        <div class="action-completed">
+                            This claim has been rejected
+                        </div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚙️</div>
+                    <h2>No Claims to Manage</h2>
+                    <p>You don't have any claims on your items yet. When someone claims your posted items, they'll appear here for your review.</p>
+                    <a href="{% url 'my_items' %}" class="empty-state-btn">View My Items</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Calculate statistics
+        function updateStats() {
+            const claims = document.querySelectorAll('.claim-card[data-status]');
+            let pending = 0, approved = 0, rejected = 0, returned = 0;
+
+            claims.forEach(claim => {
+                const status = claim.dataset.status;
+                if (status === 'pending') pending++;
+                else if (status === 'approved') approved++;
+                else if (status === 'rejected') rejected++;
+                else if (status === 'returned') returned++;
+            });
+
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('rejectedCount').textContent = rejected;
+            document.getElementById('returnedCount').textContent = returned;
+        }
+
+        // Filter by status
+        function filterByStatus(status) {
+            const claims = document.querySelectorAll('.claim-card[data-status]');
+            const tabs = document.querySelectorAll('.tab-btn');
+            
+            // Update active tab
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Filter claims
+            claims.forEach(claim => {
+                if (status === 'all' || claim.dataset.status === status) {
+                    claim.style.display = 'flex';
+                } else {
+                    claim.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', updateStats);
+    </script>
+</body>
+</html>

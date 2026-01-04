@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ item.title }} - Back2You</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/item_detail.css' %}">
+</head>
+<body>
+
+<!-- Navbar -->
+{% if user.is_authenticated %}
+        {% include 'navbar.html' %}
+    {% else %}
+        {% include 'navbar_nouser.html' %}
+    {% endif %}
+
+    <div class="container">
+        <a href="javascript:history.back()" class="back-link">
+            ← Back to List
+        </a>
+
+        <div class="item-detail-grid">
+            <!-- Main Item Card -->
+            <div class="item-main-card {{ item.status }}">
+                <div class="item-image-section">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                    {% else %}
+                        {% if item.status == 'lost' %}🔍{% elif item.status == 'found' %}✨{% else %}✅{% endif %}
+                    {% endif %}
+                    <div class="status-overlay {{ item.status }}">
+                        {{ item.status|upper }}
+                    </div>
+                </div>
+
+                <div class="item-content">
+                    <h1 class="item-title">{{ item.title }}</h1>
+                    <p class="item-description">{{ item.description }}</p>
+
+                    <div class="item-meta-grid">
+                        <div class="meta-row">
+                            <div class="meta-icon">📍</div>
+                            <div class="meta-content">
+                                <div class="meta-label">Location</div>
+                                <div class="meta-value">{{ item.location }}</div>
+                            </div>
+                        </div>
+
+                        <div class="meta-row">
+                            <div class="meta-icon">📅</div>
+                            <div class="meta-content">
+                                <div class="meta-label">Date</div>
+                                <div class="meta-value">{{ item.date|date:"d M Y" }}</div>
+                            </div>
+                        </div>
+
+                        <div class="meta-row">
+                            <div class="meta-icon">👤</div>
+                            <div class="meta-content">
+                                <div class="meta-label">Posted By</div>
+                                <div class="meta-value">{{ item.posted_by.username }}</div>
+                            </div>
+                        </div>
+
+                        <div class="meta-row">
+                            <div class="meta-icon">🕒</div>
+                            <div class="meta-content">
+                                <div class="meta-label">Posted</div>
+                                <div class="meta-value">{{ item.created_at|timesince }} ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        {% if user.is_authenticated %}
+                            {% if item.posted_by == user %}
+                                <a href="{% url 'edit_item' item.id %}" class="btn btn-edit">✏️ Edit Item</a>
+                                <a href="{% url 'delete_item' item.id %}" class="btn btn-delete">🗑️ Delete Item</a>
+                            {% else %}
+                                {% if item.status == 'found' %}
+                                    <a href="{% url 'claim_item' item.id %}" class="btn btn-claim">🎯 Claim This Item</a>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-claim">Login to Claim</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Potential Matches -->
+            <div class="matches-section">
+                <div class="matches-header">
+                    <h2>🔗 Potential Matches</h2>
+                    <span class="matches-count">{{ matches|length }}</span>
+                </div>
+
+                <div class="matches-grid">
+                    {% for match in matches %}
+                        <div class="match-card {{ match.status }}">
+                            <div class="match-image">
+                                {% if match.image %}
+                                    <img src="{{ match.image.url }}" alt="{{ match.title }}">
+                                {% else %}
+                                    {% if match.status == 'lost' %}🔍{% else %}✨{% endif %}
+                                {% endif %}
+                            </div>
+                            <div class="match-info">
+                                <div class="match-title">
+                                    <a href="{% url 'item_detail' match.id %}">{{ match.title }}</a>
+                                </div>
+                                <div class="match-location">
+                                    <span>📍</span>
+                                    <span>{{ match.location }}</span>
+                                </div>
+                                <div class="match-user">
+                                    <span>👤</span>
+                                    <span>{{ match.posted_by.username }}</span>
+                                    <span>•</span>
+                                    <span>{{ match.created_at|timesince }} ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="no-matches">
+                            <div class="no-matches-icon">🔍</div>
+                            <p>No potential matches found in the same area yet.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

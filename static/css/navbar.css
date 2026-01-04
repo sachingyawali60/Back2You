@@ -1,0 +1,260 @@
+
+    :root {
+        --primary: #6366f1;
+        --primary-dark: #4f46e5;
+        --secondary: #ec4899;
+        --dark: #1f2937;
+        --light: #f9fafb;
+    }
+
+    .navbar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        width: 100%;
+    }
+
+    .nav-container {
+      max-width: 85%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+        align-items: center;
+    }
+
+    .nav-links > li > a,button {
+        text-decoration: none;
+        color: var(--dark);
+        font-weight: 500;
+        padding: 0.7rem 1.2rem;
+        border-radius: 8px;
+        transition: all 0.3s;
+        font-size: 0.95rem;
+        display: block;
+    }
+
+    .nav-links > li > a:hover {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--primary);
+    }
+    .nav-links > li > button:hover {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--primary);
+    }
+
+    /* Dropdown Styles */
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown-toggle {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .dropdown-toggle::after {
+        content: '▼';
+        font-size: 0.7rem;
+        transition: transform 0.3s;
+    }
+
+    .dropdown:hover .dropdown-toggle::after {
+        transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        padding: 0.5rem 0;
+        min-width: 200px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s;
+        margin-top: 0.5rem;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .dropdown-menu li {
+        list-style: none;
+    }
+
+    .dropdown-menu a {
+        display: block;
+        padding: 0.8rem 1.5rem;
+        color: var(--dark);
+        text-decoration: none;
+        transition: all 0.2s;
+        font-size: 0.9rem;
+    }
+
+    .dropdown-menu a:hover {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--primary);
+        padding-left: 2rem;
+    }
+    .dropdown-menu button:hover {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--primary);
+        padding-left: 2rem;
+    }
+
+    /* User Profile Section */
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .btn-post {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white !important;
+        padding: 0.7rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-post:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    .mobile-menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        cursor: pointer;
+        color: var(--dark);
+        padding: 0.5rem;
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 1024px) {
+        .mobile-menu-toggle {
+            display: block;
+        }
+
+        .nav-links {
+            position: fixed;
+            top: 70px;
+            right: -100%;
+            width: 300px;
+            height: calc(100vh - 70px);
+            background: white;
+            flex-direction: column;
+            padding: 2rem 1rem;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            gap: 0;
+            align-items: stretch;
+        }
+
+        .nav-links.active {
+            right: 0;
+        }
+
+        .nav-links > li {
+            width: 100%;
+        }
+
+        .nav-links > li > a {
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-menu {
+            position: static;
+            opacity: 1;
+            visibility: visible;
+            transform: none;
+            box-shadow: none;
+            background: rgba(99, 102, 241, 0.05);
+            margin: 0.5rem 0;
+            display: none;
+        }
+
+        .dropdown.active .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-toggle::after {
+            margin-left: auto;
+        }
+
+        .user-profile {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .navbar {
+            padding: 1rem;
+        }
+    }
+
+    .nav-overlay {
+        display: none;
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .nav-overlay.active {
+        display: block;
+    }

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Found Items - Back2You</title>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/found.css' %}">
+</head>
+<body>
+
+<!-- Navbar -->
+ {% if user.is_authenticated %}
+        {% include 'navbar.html' %}
+    {% else %}
+        {% include 'navbar_nouser.html' %}
+    {% endif %}
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>
+            <span>✨</span>
+            <span>Found Items</span>
+        </h1>
+        <p>Browse items that have been found. Is one of them yours? Claim it now!</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="🔍 Search found items by title, description, or location..."
+                    onkeyup="filterItems()"
+                >
+            </div>
+            <div class="items-count">
+                <span id="itemCount">{{ items|length }}</span> Found Item{{ items|length|pluralize }}
+            </div>
+        </div>
+
+        <!-- Items Grid -->
+        <div class="item-grid" id="itemGrid">
+            {% for item in items %}
+                <div class="item-card" data-title="{{ item.title|lower }}" data-description="{{ item.description|lower }}" data-location="{{ item.location|lower }}">
+                    <div class="item-image">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                        {% else %}
+                            ✨
+                        {% endif %}
+                    </div>
+                    
+                    <div class="item-content">
+                        <a href="{% url 'item_detail' item.id %}" class="item-title">{{ item.title }}</a>
+                        <p class="item-description">{{ item.description }}</p>
+                        
+                        <div class="item-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">📍</span>
+                                <strong>Found at:</strong> {{ item.location }}
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">📅</span>
+                                <strong>Posted on:</strong> <span class="date-badge">{{ item.created_at|date:"d M Y" }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item-footer">
+                        <div class="author-badge">
+                            <span>👤</span>
+                            <span>{{ item.posted_by.username }}</span>
+                        </div>
+                        <div class="action-buttons">
+                            <a href="{% url 'item_detail' item.id %}" class="view-btn">View Details</a>
+                            {% if user.is_authenticated and user != item.posted_by %}
+                                <a href="{% url 'claim_item' item.id %}" class="claim-btn">🎯 Claim</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">✨</div>
+                    <h2>No Found Items Yet</h2>
+                    <p>There are currently no found items reported. Check back later or help by posting items you've found!</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'add_item' %}" class="empty-state-btn">+ Post a Found Item</a>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="empty-state-btn">Register to Post Items</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- No Results Message (Hidden by default) -->
+        <div id="noResults" class="empty-state" style="display: none;">
+            <div class="empty-state-icon">🔍</div>
+            <h2>No Items Match Your Search</h2>
+            <p>Try adjusting your search terms or browse all items.</p>
+        </div>
+    </div>
+
+    <script>
+        function filterItems() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const itemCards = document.querySelectorAll('.item-card');
+            const noResults = document.getElementById('noResults');
+            const itemCount = document.getElementById('itemCount');
+            let visibleCount = 0;
+
+            itemCards.forEach(card => {
+                const title = card.dataset.title;
+                const description = card.dataset.description;
+                const location = card.dataset.location;
+                
+                if (title.includes(searchInput) || description.includes(searchInput) || location.includes(searchInput)) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Update count
+            itemCount.textContent = visibleCount;
+
+            // Show/hide no results message
+            if (visibleCount === 0 && searchInput !== '') {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

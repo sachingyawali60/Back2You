@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Item - Back2You</title>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/add_item.css' %}">
+</head>
+<body>
+
+<!-- Navbar -->
+    {% include 'navbar.html' %}
+    <div class="page-header">
+        <h1>
+            <span>➕</span>
+            <span>Post an Item</span>
+        </h1>
+        <p>Help reunite lost items with their owners</p>
+    </div>
+
+    <div class="container">
+        <div class="form-card">
+            {% if form.errors %}
+            <div class="form-errors">
+                <strong>⚠️ Please correct the following errors:</strong>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="error-item">• {{ field.label }}: {{ error }}</div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" id="itemForm">
+                {% csrf_token %}
+
+                <!-- Status Selection -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span>📋</span>
+                        <span>Item Status <span class="required">*</span></span>
+                    </label>
+                    <div class="status-selector">
+                        <div class="status-option">
+                            <input type="radio" name="status" value="lost" id="status-lost" class="status-input" required {% if form.status.value == 'lost' %}checked{% endif %}>
+                            <label for="status-lost" class="status-label lost">
+                                <span class="status-icon">🔍</span>
+                                <span class="status-text">Lost Item</span>
+                            </label>
+                        </div>
+                        <div class="status-option">
+                            <input type="radio" name="status" value="found" id="status-found" class="status-input" {% if form.status.value == 'found' %}checked{% endif %}>
+                            <label for="status-found" class="status-label found">
+                                <span class="status-icon">✨</span>
+                                <span class="status-text">Found Item</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="id_title" class="form-label">
+                        <span>📝</span>
+                        <span>Item Title <span class="required">*</span></span>
+                    </label>
+                    {{ form.title }}
+                    <p class="form-help">Give a brief, clear name for the item (e.g., "Black iPhone 13")</p>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="id_description" class="form-label">
+                        <span>📄</span>
+                        <span>Description <span class="required">*</span></span>
+                    </label>
+                    {{ form.description }}
+                    <p class="form-help">Provide detailed information to help identify the item</p>
+                </div>
+
+                <!-- Location -->
+                <div class="form-group">
+                    <label for="id_location" class="form-label">
+                        <span>📍</span>
+                        <span>Location <span class="required">*</span></span>
+                    </label>
+                    {{ form.location }}
+                    <p class="form-help">Where was the item lost or found?</p>
+                </div>
+
+
+                <!-- Image Upload -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <span>📷</span>
+                        <span>Item Photo (Optional)</span>
+                    </label>
+                    <div class="file-input-wrapper">
+                        <input type="file" name="image" accept="image/*" id="imageInput" class="file-input">
+                        <label for="imageInput" class="file-input-label">
+                            <span class="file-input-icon">📸</span>
+                            <div class="file-input-text">
+                                <div class="file-input-title">Click to upload image</div>
+                                <div class="file-input-subtitle">PNG, JPG up to 10MB</div>
+                            </div>
+                        </label>
+                        <div class="file-preview" id="filePreview">
+                            <img id="previewImage" class="preview-image" alt="Preview">
+                            <div class="file-name">
+                                <span id="fileName"></span>
+                                <button type="button" class="remove-file" onclick="removeFile()">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        ✅ Post Item
+                    </button>
+                    <a href="{% url 'home' %}" class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // File upload preview
+        const imageInput = document.getElementById('imageInput');
+        const filePreview = document.getElementById('filePreview');
+        const previewImage = document.getElementById('previewImage');
+        const fileName = document.getElementById('fileName');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    fileName.textContent = file.name;
+                    filePreview.classList.add('active');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function removeFile() {
+            imageInput.value = '';
+            filePreview.classList.remove('active');
+            previewImage.src = '';
+            fileName.textContent = '';
+        }
+
+        // Add proper classes to form fields
+        document.getElementById('id_title').className = 'form-input';
+        document.getElementById('id_description').className = 'form-textarea';
+        document.getElementById('id_location').className = 'form-input';
+        document.getElementById('id_date').className = 'form-input';
+        document.getElementById('id_date').type = 'date';
+    </script>
+
+
+</body>
+</html>

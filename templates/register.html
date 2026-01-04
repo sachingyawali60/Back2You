@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Back2You</title>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+<body>
+
+  <!-- Navbar -->
+    {% include "navbar_nouser.html" %}
+
+
+  <!-- Register Form -->
+   <div class="body">
+
+   
+  <div class="register-container">
+        <div class="logo-section">
+            <div class="logo">🔍</div>
+            <div class="logo-text">Back2You</div>
+            <div class="logo-tagline">Join us in reuniting lost items</div>
+        </div>
+
+        <div class="register-card">
+            <div class="register-header">
+                <h1>Create Account</h1>
+                <p>Join our community and start helping others</p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                        <div class="success-message">
+                            ✅ {{ message }}
+                        </div>
+                    {% else %}
+                        <div class="error-message">
+                            ⚠️ {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" id="registerForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input 
+                            type="text" 
+                            name="username" 
+                            id="username" 
+                            class="form-input" 
+                            placeholder="Choose a username"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📧</span>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            id="email" 
+                            class="form-input" 
+                            placeholder="Enter your email"
+                            required
+                            autocomplete="email"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password1" class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input 
+                            type="password" 
+                            name="password1" 
+                            id="password1" 
+                            class="form-input" 
+                            placeholder="Create a strong password"
+                            required
+                            autocomplete="new-password"
+                        >
+                    </div>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="password-hint" id="strengthText">
+                        Password strength: Not set
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password2" class="form-label">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input 
+                            type="password" 
+                            name="password2" 
+                            id="password2" 
+                            class="form-input" 
+                            placeholder="Confirm your password"
+                            required
+                            autocomplete="new-password"
+                        >
+                    </div>
+                    <div class="password-hint" id="matchText"></div>
+                </div>
+
+                <button type="submit" class="btn-register">
+                    🚀 Create Account
+                </button>
+
+                <div class="terms">
+                    By creating an account, you agree to help reunite lost items with their rightful owners and use the platform responsibly.
+                </div>
+            </form>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <div class="login-link">
+                Already have an account? <a href="{% url 'login' %}">Sign in here</a>
+            </div>
+        </div>
+
+        <div class="back-home">
+            <a href="{% url 'home' %}">
+                ← Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+    <script>
+        // Password strength checker
+        const password1 = document.getElementById('password1');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+
+        password1.addEventListener('input', function() {
+            const value = this.value;
+            let strength = 0;
+
+            if (value.length >= 8) strength++;
+            if (value.match(/[a-z]/) && value.match(/[A-Z]/)) strength++;
+            if (value.match(/[0-9]/)) strength++;
+            if (value.match(/[^a-zA-Z0-9]/)) strength++;
+
+            strengthBar.className = 'password-strength-bar';
+            
+            if (strength === 0 || value.length === 0) {
+                strengthText.textContent = 'Password strength: Not set';
+            } else if (strength <= 2) {
+                strengthBar.classList.add('weak');
+                strengthText.textContent = 'Password strength: Weak';
+                strengthText.style.color = '#ef4444';
+            } else if (strength === 3) {
+                strengthBar.classList.add('medium');
+                strengthText.textContent = 'Password strength: Medium';
+                strengthText.style.color = '#f59e0b';
+            } else {
+                strengthBar.classList.add('strong');
+                strengthText.textContent = 'Password strength: Strong';
+                strengthText.style.color = '#10b981';
+            }
+        });
+
+        // Password match checker
+        const password2 = document.getElementById('password2');
+        const matchText = document.getElementById('matchText');
+
+        password2.addEventListener('input', function() {
+            if (this.value === '') {
+                matchText.textContent = '';
+                return;
+            }
+
+            if (this.value === password1.value) {
+                matchText.textContent = '✓ Passwords match';
+                matchText.style.color = '#10b981';
+                this.classList.remove('error');
+            } else {
+                matchText.textContent = '✗ Passwords do not match';
+                matchText.style.color = '#ef4444';
+                this.classList.add('error');
+            }
+        });
+    </script>
+
+
+</body>
+</html>

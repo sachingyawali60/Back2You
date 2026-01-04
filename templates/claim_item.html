@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Item - {{ item.title }}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/claims.css' %}">
+</head>
+<body>
+
+    <!-- Navbar -->
+       {% include 'navbar.html' %}
+
+    <div class="page-header">
+        <h1>
+            <span>🎯</span>
+            <span>Claim Item</span>
+        </h1>
+        <p>Submit proof of ownership to claim this item</p>
+    </div>
+
+    <div class="container">
+        <div class="content-grid">
+            <!-- Item Preview -->
+            <div class="item-preview">
+                <div class="preview-header">
+                    <div class="preview-title">You're claiming:</div>
+                    <h2 class="item-title">{{ item.title }}</h2>
+                </div>
+
+                <div class="item-image">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                    {% else %}
+                        ✨
+                    {% endif %}
+                </div>
+
+                <div class="item-details">
+                    <div class="detail-row">
+                        <div class="detail-icon">📍</div>
+                        <div class="detail-content">
+                            <div class="detail-label">Found At</div>
+                            <div class="detail-value">{{ item.location }}</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon">📅</div>
+                        <div class="detail-content">
+                            <div class="detail-label">Date Found</div>
+                            <div class="detail-value">{{ item.date|date:"d M Y" }}</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon">👤</div>
+                        <div class="detail-content">
+                            <div class="detail-label">Found By</div>
+                            <div class="detail-value">{{ item.posted_by.username }}</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon">📄</div>
+                        <div class="detail-content">
+                            <div class="detail-label">Description</div>
+                            <div class="detail-value">{{ item.description }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Claim Form -->
+            <div class="form-card">
+                <div class="form-header">
+                    <h2>Verification Details</h2>
+                    <p>Provide information to prove this item belongs to you</p>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">💡 Tip</div>
+                    <div class="info-box-text">
+                        Be specific! Mention unique details, serial numbers, or circumstances that prove ownership.
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="id_message" class="form-label">
+                            Your Message <span class="required">*</span>
+                        </label>
+                        {{ form.message }}
+                        <p class="form-help">
+                            Explain why this item is yours. Include specific details that only the owner would know.
+                        </p>
+                        <div class="char-counter">
+                            <span id="charCount">0</span> characters
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-claim">
+                            🎯 Submit Claim
+                        </button>
+                        <a href="{% url 'item_detail' item.id %}" class="btn btn-cancel">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="tips-section">
+                <div class="tips-header">
+                    <span>💡</span>
+                    <span>Tips for a Successful Claim</span>
+                </div>
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <div class="tip-title">Be Specific</div>
+                        <div class="tip-text">Include unique details like serial numbers, distinctive marks, or contents.</div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-title">Provide Context</div>
+                        <div class="tip-text">Explain when and where you lost it, and circumstances around the loss.</div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-title">Be Honest</div>
+                        <div class="tip-text">Only claim items that are genuinely yours. False claims may result in account suspension.</div>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-title">Stay Responsive</div>
+                        <div class="tip-text">Check your claims regularly and respond promptly to the item owner.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add proper class to textarea
+        const messageField = document.getElementById('id_message');
+        messageField.className = 'form-textarea';
+        messageField.placeholder = 'Example: This is my black iPhone 13 with a cracked screen protector. It has a blue case with my initials "JD" on the back. I lost it on campus near the library on Tuesday around 3 PM...';
+
+        // Character counter
+        const charCount = document.getElementById('charCount');
+        messageField.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
+
+        // Initialize count
+        charCount.textContent = messageField.value.length;
+    </script>
+
+</body>
+</html>

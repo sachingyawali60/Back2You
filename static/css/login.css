@@ -19,7 +19,7 @@
         }
 
         .login-container {
-            width: 100%;
+            width: 90%;
             max-width: 450px;
         }
 
@@ -134,7 +134,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 1rem;
         }
 
         .btn-login:hover {

@@ -2,10 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
-
 from .models import Item, Claim
 from .forms import ItemForm, ClaimForm, UserProfileForm
-
+from .utils import find_similar_items
 
 # ---------- STATIC PAGES ----------
 
@@ -70,7 +69,15 @@ def get_matching_items(item):
 
 def item_detail(request, item_id):
     item = get_object_or_404(Item, id=item_id)
-    matches = get_matching_items(item)
+
+    # Opposite status only
+    if item.status == 'lost':
+        candidates = Item.objects.filter(status='found').exclude(id=item.id)
+    else:
+        candidates = Item.objects.filter(status='lost').exclude(id=item.id)
+
+    matches = find_similar_items(item, candidates)
+
     return render(request, 'item_detail.html', {
         'item': item,
         'matches': matches
@@ -86,7 +93,7 @@ def edit_item(request, item_id):
         form = ItemForm(request.POST, request.FILES, instance=item)
         if form.is_valid():
             form.save()
-            return redirect('my_items')
+            return redirect('my_item')
     else:
         form = ItemForm(instance=item)
 

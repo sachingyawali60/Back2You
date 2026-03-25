@@ -1,13 +1,402 @@
-    {% load static %}
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Back2You | Home</title>
-        <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    </head>
-    <body>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Back2You | Lost & Found Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <style>
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0f766e 0%, #0d5d56 50%, #0a4a44 100%);
+            color: #ffffff;
+            padding: 5rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
 
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .hero-btn-primary {
+            background: #ffffff;
+            color: #0f766e;
+        }
+
+        .hero-btn-primary:hover {
+            background: #f9fafb;
+            color: #0d5d56;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-btn-outline {
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: #ffffff;
+            padding: 2rem 1.5rem;
+            margin-top: -2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .stats-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0f766e;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+
+        /* Recent Items Section */
+        .recent-section {
+            padding: 4rem 1.5rem;
+            background: #f9fafb;
+        }
+
+        .section-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .items-column {
+            background: #ffffff;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .column-header {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .column-header.lost {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            color: #dc2626;
+        }
+
+        .column-header.found {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            color: #16a34a;
+        }
+
+        .column-header svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .items-list {
+            padding: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .item-card {
+            display: block;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background: #f9fafb;
+            margin-bottom: 0.75rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .item-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .item-card.lost-item {
+            border-left-color: #ef4444;
+        }
+
+        .item-card.found-item {
+            border-left-color: #22c55e;
+        }
+
+        .item-card:hover {
+            background: #f3f4f6;
+            transform: translateX(4px);
+        }
+
+        .item-card-title {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+            font-size: 0.9375rem;
+        }
+
+        .item-card-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8125rem;
+            color: #6b7280;
+        }
+
+        .item-card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .empty-list {
+            padding: 2rem;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        .empty-list svg {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            opacity: 0.5;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 5rem 1.5rem;
+            background: #ffffff;
+        }
+
+        .features-grid {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 1rem;
+            background: #f9fafb;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            background: #ffffff;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+        .feature-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .site-footer {
+            background: #111827;
+            color: #9ca3af;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .site-footer p {
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
     {% if user.is_authenticated %}
         {% include 'navbar.html' %}
     {% else %}
@@ -15,98 +404,196 @@
     {% endif %}
 
     <!-- Hero Section -->
-        <section class="hero">
-            <h1>Back2You</h1>
-            <p>Lost something? Found something? Let's get it back where it belongs.</p>
-            <div class="hero-buttons">
-                <a href="{% url 'lost_items' %}" class="btn btn-primary">🔍 View Lost Items</a>
-                <a href="{% url 'found_items' %}" class="btn btn-outline">✨ View Found Items</a>
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Trusted Community Platform
             </div>
-        </section>
+            <h1>Lost Something? Found Something?</h1>
+            <p>Back2You connects people who've lost items with those who've found them. Join our community and help reunite belongings with their rightful owners.</p>
+            <div class="hero-buttons">
+                <a href="{% url 'lost_items' %}" class="hero-btn hero-btn-primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                    View Lost Items
+                </a>
+                <a href="{% url 'found_items' %}" class="hero-btn hero-btn-outline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    View Found Items
+                </a>
+            </div>
+        </div>
+    </section>
 
-        <!-- Recent Items Section -->
-        <section class="recent-items">
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">{{ total_items|default:"0" }}</div>
+                <div class="stat-label">Items Posted</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ total_users|default:"0" }}</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ total_returned|default:"0" }}</div>
+                <div class="stat-label">Items Returned</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Items Section -->
+    <section class="recent-section">
+        <div class="section-container">
             <div class="section-header">
                 <h2>Recent Activity</h2>
                 <p>Latest lost and found items from our community</p>
             </div>
             
             <div class="items-grid">
-                <!-- Lost Items -->
-                <div class="items-section">
-                    <div class="section-title lost">
-                        <span>🔍</span>
-                        <span>Recently Lost</span>
+                <!-- Lost Items Column -->
+                <div class="items-column">
+                    <div class="column-header lost">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                        Recently Lost
                     </div>
                     <div class="items-list">
                         {% for item in recent_lost %}
-                            <div class="item-card">
-                                <a href="{% url 'item_detail' item.id %}" class="item-title">{{ item.title }}</a>
-                                <div class="item-details">
-                                    <span class="item-location">📍 {{ item.location }}</span>
-                                    <span class="item-author">👤 {{ item.posted_by.username }}</span>
+                            <a href="{% url 'item_detail' item.id %}" class="item-card lost-item">
+                                <div class="item-card-title">{{ item.title }}</div>
+                                <div class="item-card-meta">
+                                    <span>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        {{ item.location }}
+                                    </span>
+                                    <span>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                        {{ item.posted_by.username }}
+                                    </span>
                                 </div>
-                            </div>
+                            </a>
                         {% empty %}
-                            <div class="empty-state">
-                                <div class="empty-state-icon">🔍</div>
-                                <div class="empty-state-text">No lost items reported yet</div>
+                            <div class="empty-list">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.3-4.3"></path>
+                                </svg>
+                                <p>No lost items reported yet</p>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
 
-                <!-- Found Items -->
-                <div class="items-section">
-                    <div class="section-title found">
-                        <span>✨</span>
-                        <span>Recently Found</span>
+                <!-- Found Items Column -->
+                <div class="items-column">
+                    <div class="column-header found">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Recently Found
                     </div>
                     <div class="items-list">
                         {% for item in recent_found %}
-                            <div class="item-card found-card">
-                                <a href="{% url 'item_detail' item.id %}" class="item-title">{{ item.title }}</a>
-                                <div class="item-details">
-                                    <span class="item-location">📍 {{ item.location }}</span>
-                                    <span class="item-author">👤 {{ item.posted_by.username }}</span>
+                            <a href="{% url 'item_detail' item.id %}" class="item-card found-item">
+                                <div class="item-card-title">{{ item.title }}</div>
+                                <div class="item-card-meta">
+                                    <span>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        {{ item.location }}
+                                    </span>
+                                    <span>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                        {{ item.posted_by.username }}
+                                    </span>
                                 </div>
-                            </div>
+                            </a>
                         {% empty %}
-                            <div class="empty-state">
-                                <div class="empty-state-icon">✨</div>
-                                <div class="empty-state-text">No found items reported yet</div>
+                            <div class="empty-list">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                <p>No found items reported yet</p>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Features Section -->
-        <section class="features">
-            <div class="feature-card">
-                <div class="feature-icon">📢</div>
-                <h3>Report Lost Items</h3>
-                <p>Easily report lost items with detailed descriptions and images to help others identify them quickly.</p>
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Simple steps to reunite items with their owners</p>
             </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </div>
+                    <h3>Report Items</h3>
+                    <p>Easily report lost or found items with detailed descriptions and images to help with identification.</p>
+                </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">🎯</div>
-                <h3>Claim Found Items</h3>
-                <p>Found something? Post it and help reunite owners with their belongings through our verification system.</p>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                    </div>
+                    <h3>Search & Match</h3>
+                    <p>Browse listings and find potential matches. Our system suggests items based on location and timing.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Claim & Return</h3>
+                    <p>Submit claims with verification details. Item owners review and approve legitimate claims.</p>
+                </div>
             </div>
+        </div>
+    </section>
 
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h3>Track Claims</h3>
-                <p>Monitor your claim status in real-time and receive instant notifications about approvals or updates.</p>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer>
-            <p>© 2025 Back2You | Lost & Found Portal - Reuniting people with their belongings</p>
-        </footer>
-
-    </body>
-    </html>
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>2025 Back2You | Lost & Found Portal - Reuniting people with their belongings</p>
+    </footer>
+</body>
+</html>

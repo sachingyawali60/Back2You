@@ -1,143 +1,237 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About</title>
-{% load static %}
-  <link rel="stylesheet" href="{% static 'css/About.css' %}"></head>
-
- {% if user.is_authenticated %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Back2You</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F766E',
+                        'primary-dark': '#0D6560',
+                        secondary: '#F0FDFA',
+                        accent: '#14B8A6',
+                        dark: '#0F172A',
+                        muted: '#64748B',
+                        light: '#F8FAFC',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .feature-card { transition: all 0.3s ease; }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .step-card { transition: all 0.3s ease; }
+        .step-card:hover { background-color: #F0FDFA; }
+    </style>
+</head>
+<body class="bg-light min-h-screen">
+    {% if user.is_authenticated %}
         {% include 'navbar.html' %}
     {% else %}
         {% include 'navbar_nouser.html' %}
     {% endif %}
 
-    <div class="page-header">
-        <h1>
-            <span>🔍</span>
-            <span>About Back2You</span>
-        </h1>
-        <p>Connecting communities to reunite people with their lost belongings through trust, technology, and compassion.</p>
-    </div>
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <div class="bg-gradient-to-br from-primary to-accent py-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">About Back2You</h1>
+                <p class="text-xl text-teal-100 leading-relaxed">
+                    Connecting communities to reunite people with their lost belongings through trust, technology, and compassion.
+                </p>
+            </div>
+        </div>
 
-    <div class="container">
         <!-- Mission Section -->
-        <div class="mission-section">
-            <div class="mission-icon">💫</div>
-            <h2>Our Mission</h2>
-            <p>
-                Back2You was created with a simple yet powerful mission: to make the world a smaller, kinder place by helping people recover their lost belongings. We believe that behind every lost item is a story, a memory, and sometimes, irreplaceable value. Our platform brings together good-hearted individuals who've found items and those searching for them, creating a bridge of hope and community support.
-            </p>
-        </div>
-
-        <!-- Features Grid -->
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🌍</div>
-                <h3>Community-Driven</h3>
-                <p>Built on the principle that people want to help each other. Every user contributes to making our community safer and more connected.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-                <h3>Safe & Secure</h3>
-                <p>We prioritize your privacy and security with verification systems that protect both finders and claimants throughout the process.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3>Fast & Simple</h3>
-                <p>Our intuitive platform makes posting and claiming items effortless, so you can focus on what matters - reuniting items with their owners.</p>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="bg-white rounded-3xl shadow-lg p-8 md:p-12 -mt-16 relative z-10">
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="w-24 h-24 bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-dark mb-4">Our Mission</h2>
+                        <p class="text-muted leading-relaxed">
+                            Back2You was created with a simple yet powerful mission: to make the world a smaller, kinder place by helping people recover their lost belongings. We believe that behind every lost item is a story, a memory, and sometimes, irreplaceable value. Our platform brings together good-hearted individuals who've found items and those searching for them, creating a bridge of hope and community support.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- How It Works -->
-        <div class="how-it-works">
-            <h2>How It Works</h2>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Report Lost or Found Items</h3>
-                        <p>Create a detailed post with descriptions, photos, and location information. The more details you provide, the better chance of a successful match!</p>
+        <!-- Features Section -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-dark mb-4">Why Choose Back2You?</h2>
+                <p class="text-muted max-w-2xl mx-auto">Our platform is built on principles that prioritize your experience and success.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="feature-card bg-white rounded-2xl shadow-md p-8 text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
                     </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Community-Driven</h3>
+                    <p class="text-muted">Built on the principle that people want to help each other. Every user contributes to making our community safer and more connected.</p>
                 </div>
-
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Browse & Match</h3>
-                        <p>Our smart matching system suggests potential matches based on location and timing. Search through listings to find your lost item or help someone find theirs.</p>
+                <div class="feature-card bg-white rounded-2xl shadow-md p-8 text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
                     </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Safe & Secure</h3>
+                    <p class="text-muted">We prioritize your privacy and security with verification systems that protect both finders and claimants throughout the process.</p>
                 </div>
-
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Submit a Claim</h3>
-                        <p>Found your item? Submit a claim with verification details. Item owners review claims and approve legitimate ones to begin the return process.</p>
+                <div class="feature-card bg-white rounded-2xl shadow-md p-8 text-center">
+                    <div class="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
                     </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Fast & Simple</h3>
+                    <p class="text-muted">Our intuitive platform makes posting and claiming items effortless, so you can focus on what matters - reuniting items with their owners.</p>
                 </div>
+            </div>
+        </div>
 
-                <div class="step-card">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>Coordinate & Return</h3>
-                        <p>Connect with each other through our platform, arrange a safe meeting location, and complete the joyful reunion of owner and belonging!</p>
+        <!-- How It Works Section -->
+        <div class="bg-white py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-dark mb-4">How It Works</h2>
+                    <p class="text-muted max-w-2xl mx-auto">Getting your lost items back is just four simple steps away.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="step-card bg-gray-50 rounded-2xl p-6 relative">
+                        <div class="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center text-xl font-bold mb-4">1</div>
+                        <h3 class="text-lg font-bold text-dark mb-2">Report Items</h3>
+                        <p class="text-muted text-sm">Create a detailed post with descriptions, photos, and location information for better matching.</p>
+                    </div>
+                    <div class="step-card bg-gray-50 rounded-2xl p-6 relative">
+                        <div class="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center text-xl font-bold mb-4">2</div>
+                        <h3 class="text-lg font-bold text-dark mb-2">Browse & Match</h3>
+                        <p class="text-muted text-sm">Search through listings to find your lost item or help someone find theirs with our smart system.</p>
+                    </div>
+                    <div class="step-card bg-gray-50 rounded-2xl p-6 relative">
+                        <div class="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center text-xl font-bold mb-4">3</div>
+                        <h3 class="text-lg font-bold text-dark mb-2">Submit a Claim</h3>
+                        <p class="text-muted text-sm">Found your item? Submit a claim with verification details for the owner to review.</p>
+                    </div>
+                    <div class="step-card bg-gray-50 rounded-2xl p-6 relative">
+                        <div class="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center text-xl font-bold mb-4">4</div>
+                        <h3 class="text-lg font-bold text-dark mb-2">Coordinate & Return</h3>
+                        <p class="text-muted text-sm">Connect through our platform, arrange a safe meeting, and complete the joyful reunion!</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Stats Section -->
-        <div class="stats-section">
-            <h2>Our Impact</h2>
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-icon">👥</div>
-                    <div class="stat-number">1000+</div>
-                    <div class="stat-label">Active Users</div>
+        <div class="bg-gradient-to-br from-dark to-gray-800 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-white mb-4">Our Impact</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto">Together, we're making a difference in communities worldwide.</p>
                 </div>
-
-                <div class="stat-box">
-                    <div class="stat-icon">📦</div>
-                    <div class="stat-number">500+</div>
-                    <div class="stat-label">Items Posted</div>
-                </div>
-
-                <div class="stat-box">
-                    <div class="stat-icon">✅</div>
-                    <div class="stat-number">250+</div>
-                    <div class="stat-label">Successful Returns</div>
-                </div>
-
-                <div class="stat-box">
-                    <div class="stat-icon">😊</div>
-                    <div class="stat-number">95%</div>
-                    <div class="stat-label">Satisfaction Rate</div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                        </div>
+                        <p class="text-3xl font-bold text-white mb-1">1000+</p>
+                        <p class="text-gray-400 text-sm">Active Users</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                            </svg>
+                        </div>
+                        <p class="text-3xl font-bold text-white mb-1">500+</p>
+                        <p class="text-gray-400 text-sm">Items Posted</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <p class="text-3xl font-bold text-white mb-1">250+</p>
+                        <p class="text-gray-400 text-sm">Successful Returns</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <p class="text-3xl font-bold text-white mb-1">95%</p>
+                        <p class="text-gray-400 text-sm">Satisfaction Rate</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- CTA Section -->
-        <div class="cta-section">
-            <h2>Ready to Get Started?</h2>
-            <p>Join our community today and help us create a world where no item stays lost forever.</p>
-            <div class="cta-buttons">
-                {% if user.is_authenticated %}
-                    <a href="{% url 'add_item' %}" class="btn btn-white">Post an Item</a>
-                    <a href="{% url 'lost_items' %}" class="btn btn-outline">Browse Lost Items</a>
-                {% else %}
-                    <a href="{% url 'register' %}" class="btn btn-white">Create Account</a>
-                    <a href="{% url 'login' %}" class="btn btn-outline">Sign In</a>
-                {% endif %}
+        <div class="bg-secondary py-16">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl font-bold text-dark mb-4">Ready to Get Started?</h2>
+                <p class="text-muted mb-8 max-w-2xl mx-auto">Join our community today and help us create a world where no item stays lost forever.</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'add_item' %}" class="px-8 py-4 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-colors shadow-lg">
+                        Post an Item
+                    </a>
+                    <a href="{% url 'lost_items' %}" class="px-8 py-4 border-2 border-primary text-primary font-semibold rounded-xl hover:bg-primary hover:text-white transition-colors">
+                        Browse Lost Items
+                    </a>
+                    {% else %}
+                    <a href="{% url 'register' %}" class="px-8 py-4 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-colors shadow-lg">
+                        Create Account
+                    </a>
+                    <a href="{% url 'login' %}" class="px-8 py-4 border-2 border-primary text-primary font-semibold rounded-xl hover:bg-primary hover:text-white transition-colors">
+                        Sign In
+                    </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <footer>
-        <p>© 2025 Back2You | Lost & Found Portal - Reuniting people with their belongings</p>
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center mr-3">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold">Back2You</span>
+                </div>
+                <p class="text-gray-400 text-sm">2025 Back2You | Lost & Found Portal - Reuniting people with their belongings</p>
+            </div>
+        </div>
     </footer>
 </body>
 </html>

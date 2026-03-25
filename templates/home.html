@@ -1,112 +1,112 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Back2You | Home</title>
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
-</head>
-<body>
+    {% load static %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Back2You | Home</title>
+        <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    </head>
+    <body>
 
-{% if user.is_authenticated %}
-    {% include 'navbar.html' %}
-{% else %}
-    {% include 'navbar_nouser.html' %}
-{% endif %}
+    {% if user.is_authenticated %}
+        {% include 'navbar.html' %}
+    {% else %}
+        {% include 'navbar_nouser.html' %}
+    {% endif %}
 
-<!-- Hero Section -->
-    <section class="hero">
-        <h1>Back2You</h1>
-        <p>Lost something? Found something? Let's get it back where it belongs.</p>
-        <div class="hero-buttons">
-            <a href="{% url 'lost_items' %}" class="btn btn-primary">🔍 View Lost Items</a>
-            <a href="{% url 'found_items' %}" class="btn btn-outline">✨ View Found Items</a>
-        </div>
-    </section>
+    <!-- Hero Section -->
+        <section class="hero">
+            <h1>Back2You</h1>
+            <p>Lost something? Found something? Let's get it back where it belongs.</p>
+            <div class="hero-buttons">
+                <a href="{% url 'lost_items' %}" class="btn btn-primary">🔍 View Lost Items</a>
+                <a href="{% url 'found_items' %}" class="btn btn-outline">✨ View Found Items</a>
+            </div>
+        </section>
 
-    <!-- Recent Items Section -->
-    <section class="recent-items">
-        <div class="section-header">
-            <h2>Recent Activity</h2>
-            <p>Latest lost and found items from our community</p>
-        </div>
-        
-        <div class="items-grid">
-            <!-- Lost Items -->
-            <div class="items-section">
-                <div class="section-title lost">
-                    <span>🔍</span>
-                    <span>Recently Lost</span>
-                </div>
-                <div class="items-list">
-                    {% for item in recent_lost %}
-                        <div class="item-card">
-                            <a href="{% url 'item_detail' item.id %}" class="item-title">{{ item.title }}</a>
-                            <div class="item-details">
-                                <span class="item-location">📍 {{ item.location }}</span>
-                                <span class="item-author">👤 {{ item.posted_by.username }}</span>
+        <!-- Recent Items Section -->
+        <section class="recent-items">
+            <div class="section-header">
+                <h2>Recent Activity</h2>
+                <p>Latest lost and found items from our community</p>
+            </div>
+            
+            <div class="items-grid">
+                <!-- Lost Items -->
+                <div class="items-section">
+                    <div class="section-title lost">
+                        <span>🔍</span>
+                        <span>Recently Lost</span>
+                    </div>
+                    <div class="items-list">
+                        {% for item in recent_lost %}
+                            <div class="item-card">
+                                <a href="{% url 'item_detail' item.id %}" class="item-title">{{ item.title }}</a>
+                                <div class="item-details">
+                                    <span class="item-location">📍 {{ item.location }}</span>
+                                    <span class="item-author">👤 {{ item.posted_by.username }}</span>
+                                </div>
                             </div>
-                        </div>
-                    {% empty %}
-                        <div class="empty-state">
-                            <div class="empty-state-icon">🔍</div>
-                            <div class="empty-state-text">No lost items reported yet</div>
-                        </div>
-                    {% endfor %}
+                        {% empty %}
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🔍</div>
+                                <div class="empty-state-text">No lost items reported yet</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Found Items -->
+                <div class="items-section">
+                    <div class="section-title found">
+                        <span>✨</span>
+                        <span>Recently Found</span>
+                    </div>
+                    <div class="items-list">
+                        {% for item in recent_found %}
+                            <div class="item-card found-card">
+                                <a href="{% url 'item_detail' item.id %}" class="item-title">{{ item.title }}</a>
+                                <div class="item-details">
+                                    <span class="item-location">📍 {{ item.location }}</span>
+                                    <span class="item-author">👤 {{ item.posted_by.username }}</span>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="empty-state">
+                                <div class="empty-state-icon">✨</div>
+                                <div class="empty-state-text">No found items reported yet</div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Found Items -->
-            <div class="items-section">
-                <div class="section-title found">
-                    <span>✨</span>
-                    <span>Recently Found</span>
-                </div>
-                <div class="items-list">
-                    {% for item in recent_found %}
-                        <div class="item-card found-card">
-                            <a href="{% url 'item_detail' item.id %}" class="item-title">{{ item.title }}</a>
-                            <div class="item-details">
-                                <span class="item-location">📍 {{ item.location }}</span>
-                                <span class="item-author">👤 {{ item.posted_by.username }}</span>
-                            </div>
-                        </div>
-                    {% empty %}
-                        <div class="empty-state">
-                            <div class="empty-state-icon">✨</div>
-                            <div class="empty-state-text">No found items reported yet</div>
-                        </div>
-                    {% endfor %}
-                </div>
+        <!-- Features Section -->
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📢</div>
+                <h3>Report Lost Items</h3>
+                <p>Easily report lost items with detailed descriptions and images to help others identify them quickly.</p>
             </div>
-        </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="feature-card">
-            <div class="feature-icon">📢</div>
-            <h3>Report Lost Items</h3>
-            <p>Easily report lost items with detailed descriptions and images to help others identify them quickly.</p>
-        </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Claim Found Items</h3>
+                <p>Found something? Post it and help reunite owners with their belongings through our verification system.</p>
+            </div>
 
-        <div class="feature-card">
-            <div class="feature-icon">🎯</div>
-            <h3>Claim Found Items</h3>
-            <p>Found something? Post it and help reunite owners with their belongings through our verification system.</p>
-        </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Track Claims</h3>
+                <p>Monitor your claim status in real-time and receive instant notifications about approvals or updates.</p>
+            </div>
+        </section>
 
-        <div class="feature-card">
-            <div class="feature-icon">📊</div>
-            <h3>Track Claims</h3>
-            <p>Monitor your claim status in real-time and receive instant notifications about approvals or updates.</p>
-        </div>
-    </section>
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 Back2You | Lost & Found Portal - Reuniting people with their belongings</p>
+        </footer>
 
-    <!-- Footer -->
-    <footer>
-        <p>© 2025 Back2You | Lost & Found Portal - Reuniting people with their belongings</p>
-    </footer>
-
-</body>
-</html>
+    </body>
+    </html>

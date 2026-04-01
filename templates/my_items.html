@@ -1,141 +1,241 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>My Items - Back2You</title>
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'css/my_item.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Items - Back2You</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F766E',
+                        'primary-dark': '#0D6560',
+                        secondary: '#F0FDFA',
+                        accent: '#14B8A6',
+                        dark: '#0F172A',
+                        muted: '#64748B',
+                        light: '#F8FAFC',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .item-card { transition: all 0.3s ease; }
+        .item-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .tab-active { border-bottom: 2px solid #0F766E; color: #0F766E; }
+    </style>
 </head>
-<body>
-
+<body class="bg-light min-h-screen">
     {% include 'navbar.html' %}
- <!-- Page Header -->
-    <div class="page-header">
-        <h1>
-            <span>📦</span>
-            <span>My Posted Items</span>
-        </h1>
-        <p>Manage all your lost and found item posts in one place</p>
-    </div>
 
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Statistics Bar -->
-        <div class="stats-bar">
-            <div class="stat-card">
-                <div class="stat-icon">📊</div>
-                <div class="stat-number" id="totalCount">{{ items|length }}</div>
-                <div class="stat-label">Total Items</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🔍</div>
-                <div class="stat-number" id="lostCount">0</div>
-                <div class="stat-label">Lost Items</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">✨</div>
-                <div class="stat-number" id="foundCount">0</div>
-                <div class="stat-label">Found Items</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">✅</div>
-                <div class="stat-number" id="returnedCount">0</div>
-                <div class="stat-label">Returned Items</div>
+    <main class="pt-20 pb-16">
+        <!-- Page Header -->
+        <div class="bg-gradient-to-br from-primary to-accent py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">My Items</h1>
+                        <p class="text-teal-100">Manage all items you've reported</p>
+                    </div>
+                    <a href="{% url 'add_item' %}" class="mt-4 md:mt-0 inline-flex items-center px-6 py-3 bg-white text-primary font-semibold rounded-xl shadow-lg hover:bg-gray-50 transition-all">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Report New Item
+                    </a>
+                </div>
             </div>
         </div>
 
-        <!-- Filter Tabs -->
-        <div class="filter-tabs">
-            <button class="tab-btn active" onclick="filterByStatus('all')">All Items</button>
-            <button class="tab-btn" onclick="filterByStatus('lost')">🔍 Lost</button>
-            <button class="tab-btn" onclick="filterByStatus('found')">✨ Found</button>
-            <button class="tab-btn" onclick="filterByStatus('returned')">✅ Returned</button>
-        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white rounded-2xl shadow-md p-5">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-muted">Total</p>
+                            <p class="text-2xl font-bold text-dark">{{ items|length }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-md p-5">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-muted">Lost</p>
+                            <p class="text-2xl font-bold text-dark" id="lostCount">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-md p-5">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-muted">Found</p>
+                            <p class="text-2xl font-bold text-dark" id="foundCount">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-md p-5">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-muted">Returned</p>
+                            <p class="text-2xl font-bold text-dark" id="returnedCount">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Items Grid -->
-        <div class="item-grid" id="itemGrid">
-            {% for item in items %}
-                <div class="item-card {{ item.status }}" data-status="{{ item.status }}">
-                    <span class="status-badge {{ item.status }}">{{ item.status }}</span>
-                    
-                    <div class="item-image">
+            <!-- Filter Tabs -->
+            <div class="bg-white rounded-2xl shadow-md mb-8">
+                <div class="border-b border-gray-100">
+                    <div class="flex space-x-8 px-6 overflow-x-auto">
+                        <button onclick="filterByStatus('all')" class="py-4 text-sm font-medium tab-btn tab-active whitespace-nowrap" data-filter="all">All Items</button>
+                        <button onclick="filterByStatus('lost')" class="py-4 text-sm font-medium text-muted hover:text-primary tab-btn whitespace-nowrap" data-filter="lost">Lost</button>
+                        <button onclick="filterByStatus('found')" class="py-4 text-sm font-medium text-muted hover:text-primary tab-btn whitespace-nowrap" data-filter="found">Found</button>
+                        <button onclick="filterByStatus('returned')" class="py-4 text-sm font-medium text-muted hover:text-primary tab-btn whitespace-nowrap" data-filter="returned">Returned</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items Grid -->
+            {% if items %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="itemGrid">
+                {% for item in items %}
+                <div class="item-card bg-white rounded-2xl shadow-md overflow-hidden" data-status="{{ item.status|lower }}">
+                    <div class="relative">
                         {% if item.image %}
-                            <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="w-full h-48 object-cover">
                         {% else %}
-                            {% if item.status == 'lost' %}🔍{% elif item.status == 'found' %}✨{% else %}✅{% endif %}
+                        <div class="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
                         {% endif %}
-                    </div>
-                    
-                    <div class="item-content">
-                        <h3 class="item-title">{{ item.title }}</h3>
-                        <p class="item-description">{{ item.description }}</p>
-                        
-                        <div class="item-meta">
-                            <span>📍</span>
-                            <span>{{ item.location }}</span>
-                        </div>
-                        
-                        <div class="item-meta">
-                            <span>📅</span>
-                            <span>Posted {{ item.created_at|timesince }} ago</span>
+                        <div class="absolute top-3 left-3">
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full {% if item.status == 'lost' %}bg-red-100 text-red-700{% elif item.status == 'found' %}bg-green-100 text-green-700{% else %}bg-purple-100 text-purple-700{% endif %}">
+                                {{ item.status|title }}
+                            </span>
                         </div>
                     </div>
-
-                    <div class="item-actions">
-                        <a href="{% url 'item_detail' item.id %}" class="btn btn-view">👁️ View</a>
-                        <a href="{% url 'edit_item' item.id %}" class="btn btn-edit">✏️ Edit</a>
-                        <a href="{% url 'delete_item' item.id %}" class="btn btn-delete">🗑️ Delete</a>
+                    <div class="p-5">
+                        <h3 class="text-lg font-semibold text-dark mb-2 line-clamp-1">{{ item.title }}</h3>
+                        <p class="text-sm text-muted mb-3 line-clamp-2">{{ item.description }}</p>
+                        <div class="flex items-center text-sm text-muted mb-2">
+                            <svg class="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span class="truncate">{{ item.location }}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-muted mb-4">
+                            <svg class="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Posted {{ item.created_at|timesince }} ago
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <a href="{% url 'item_detail' item.id %}" class="flex-1 px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-xl text-center hover:bg-primary-dark transition-colors">View</a>
+                            <a href="{% url 'edit_item' item.id %}" class="px-4 py-2.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors">Edit</a>
+                            <a href="{% url 'delete_item' item.id %}" class="px-4 py-2.5 bg-red-50 text-red-600 text-sm font-medium rounded-xl hover:bg-red-100 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            {% empty %}
-                <div class="empty-state">
-                    <div class="empty-state-icon">📦</div>
-                    <h2>No Items Posted Yet</h2>
-                    <p>Start helping your community by posting lost or found items!</p>
-                    <a href="{% url 'add_item' %}" class="empty-state-btn">+ Post Your First Item</a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="bg-white rounded-2xl shadow-md p-12 text-center">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                    </svg>
                 </div>
-            {% endfor %}
+                <h3 class="text-xl font-semibold text-dark mb-2">No items reported yet</h3>
+                <p class="text-muted mb-6">Start by reporting a lost or found item</p>
+                <a href="{% url 'add_item' %}" class="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Report Your First Item
+                </a>
+            </div>
+            {% endif %}
         </div>
-    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-400">2024 Back2You. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script>
-        // Calculate statistics
         function updateStats() {
             const items = document.querySelectorAll('.item-card[data-status]');
             let lost = 0, found = 0, returned = 0;
-
             items.forEach(item => {
                 const status = item.dataset.status;
                 if (status === 'lost') lost++;
                 else if (status === 'found') found++;
                 else if (status === 'returned') returned++;
             });
-
             document.getElementById('lostCount').textContent = lost;
             document.getElementById('foundCount').textContent = found;
             document.getElementById('returnedCount').textContent = returned;
         }
 
-        // Filter by status
         function filterByStatus(status) {
             const items = document.querySelectorAll('.item-card[data-status]');
             const tabs = document.querySelectorAll('.tab-btn');
-            
-            // Update active tab
-            tabs.forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-
-            // Filter items
-            items.forEach(item => {
-                if (status === 'all' || item.dataset.status === status) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
+            tabs.forEach(tab => {
+                tab.classList.remove('tab-active', 'text-primary');
+                tab.classList.add('text-muted');
+                if (tab.dataset.filter === status) {
+                    tab.classList.add('tab-active', 'text-primary');
+                    tab.classList.remove('text-muted');
                 }
+            });
+            items.forEach(item => {
+                item.style.display = (status === 'all' || item.dataset.status === status) ? 'block' : 'none';
             });
         }
 
-        // Initialize on page load
         document.addEventListener('DOMContentLoaded', updateStats);
     </script>
 </body>

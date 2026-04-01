@@ -1,157 +1,245 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Manage Claims - Back2You</title>
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'css/manage_claims.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Claims - Back2You</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F766E',
+                        'primary-dark': '#0D6560',
+                        secondary: '#F0FDFA',
+                        accent: '#14B8A6',
+                        dark: '#0F172A',
+                        muted: '#64748B',
+                        light: '#F8FAFC',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .claim-card { transition: all 0.3s ease; }
+        .claim-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .tab-active { border-bottom: 2px solid #0F766E; color: #0F766E; }
+    </style>
 </head>
-<body>
+<body class="bg-light min-h-screen">
+    {% include 'navbar.html' %}
 
-  <!-- Navbar -->
-  {% include 'navbar.html' %}
-  <!-- Page Header -->
-    <div class="page-header">
-        <h1>
-            <span>⚙️</span>
-            <span>Manage Claims</span>
-        </h1>
-        <p>Review and respond to claims on your posted items</p>
-    </div>
-
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Statistics Bar -->
-        <div class="stats-bar">
-            <div class="stat-card pending">
-                <div class="stat-icon">⏳</div>
-                <div class="stat-number" id="pendingCount">0</div>
-                <div class="stat-label">Pending Review</div>
-            </div>
-            <div class="stat-card approved">
-                <div class="stat-icon">✅</div>
-                <div class="stat-number" id="approvedCount">0</div>
-                <div class="stat-label">Approved</div>
-            </div>
-            <div class="stat-card rejected">
-                <div class="stat-icon">❌</div>
-                <div class="stat-number" id="rejectedCount">0</div>
-                <div class="stat-label">Rejected</div>
-            </div>
-            <div class="stat-card returned">
-                <div class="stat-icon">🎉</div>
-                <div class="stat-number" id="returnedCount">0</div>
-                <div class="stat-label">Completed</div>
+    <main class="pt-20 pb-16">
+        <!-- Page Header -->
+        <div class="bg-gradient-to-br from-primary to-accent py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Manage Claims</h1>
+                <p class="text-teal-100">Review and respond to claims on your posted items</p>
             </div>
         </div>
 
-        <!-- Filter Tabs -->
-        <div class="filter-tabs">
-            <button class="tab-btn active" onclick="filterByStatus('all')">All Claims</button>
-            <button class="tab-btn" onclick="filterByStatus('pending')">⏳ Pending</button>
-            <button class="tab-btn" onclick="filterByStatus('approved')">✅ Approved</button>
-            <button class="tab-btn" onclick="filterByStatus('rejected')">❌ Rejected</button>
-            <button class="tab-btn" onclick="filterByStatus('returned')">🎉 Completed</button>
-        </div>
-
-        <!-- Claims Grid -->
-        <div class="claims-grid" id="claimsGrid">
-            {% for claim in claims %}
-                <div class="claim-card {{ claim.status }}" data-status="{{ claim.status }}">
-                    <span class="status-badge {{ claim.status }}">
-                        {% if claim.status == 'pending' %}⏳{% elif claim.status == 'approved' %}✅{% elif claim.status == 'rejected' %}❌{% else %}🎉{% endif %}
-                        {{ claim.status|capfirst }}
-                    </span>
-                    
-                    <div class="claim-header">
-                        <h3 class="item-title">{{ claim.item.title }}</h3>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white rounded-2xl shadow-md p-5">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-muted">Pending</p>
+                            <p class="text-2xl font-bold text-dark" id="pendingCount">0</p>
+                        </div>
                     </div>
-                    
-                    <div class="claim-content">
-                        <div class="info-section">
-                            <div class="info-row claimant-highlight">
-                                <div class="info-icon">👤</div>
-                                <div class="info-content">
-                                    <div class="info-label">Claimant</div>
-                                    <div class="info-value">{{ claim.claimant.username }}</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-md p-5">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-muted">Approved</p>
+                            <p class="text-2xl font-bold text-dark" id="approvedCount">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-md p-5">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-muted">Rejected</p>
+                            <p class="text-2xl font-bold text-dark" id="rejectedCount">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-md p-5">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-muted">Completed</p>
+                            <p class="text-2xl font-bold text-dark" id="returnedCount">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="bg-white rounded-2xl shadow-md mb-8">
+                <div class="border-b border-gray-100">
+                    <div class="flex space-x-8 px-6 overflow-x-auto">
+                        <button onclick="filterByStatus('all')" class="py-4 text-sm font-medium tab-btn tab-active whitespace-nowrap" data-filter="all">All Claims</button>
+                        <button onclick="filterByStatus('pending')" class="py-4 text-sm font-medium text-muted hover:text-primary tab-btn whitespace-nowrap" data-filter="pending">Pending</button>
+                        <button onclick="filterByStatus('approved')" class="py-4 text-sm font-medium text-muted hover:text-primary tab-btn whitespace-nowrap" data-filter="approved">Approved</button>
+                        <button onclick="filterByStatus('rejected')" class="py-4 text-sm font-medium text-muted hover:text-primary tab-btn whitespace-nowrap" data-filter="rejected">Rejected</button>
+                        <button onclick="filterByStatus('returned')" class="py-4 text-sm font-medium text-muted hover:text-primary tab-btn whitespace-nowrap" data-filter="returned">Completed</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Claims Grid -->
+            {% if claims %}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="claimsGrid">
+                {% for claim in claims %}
+                <div class="claim-card bg-white rounded-2xl shadow-md overflow-hidden" data-status="{{ claim.status }}">
+                    <div class="p-6">
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full {% if claim.status == 'pending' %}bg-amber-100 text-amber-700{% elif claim.status == 'approved' %}bg-green-100 text-green-700{% elif claim.status == 'rejected' %}bg-red-100 text-red-700{% else %}bg-purple-100 text-purple-700{% endif %}">
+                                {{ claim.status|capfirst }}
+                            </span>
+                            <span class="text-xs text-muted">{{ claim.created_at|date:"M d, Y" }}</span>
+                        </div>
+
+                        <!-- Item Title -->
+                        <h3 class="text-lg font-semibold text-dark mb-4">{{ claim.item.title }}</h3>
+
+                        <!-- Claimant Info -->
+                        <div class="bg-secondary rounded-xl p-4 mb-4">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-semibold text-lg mr-4">
+                                    {{ claim.claimant.username|slice:":1"|upper }}
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-dark">{{ claim.claimant.username }}</p>
+                                    <p class="text-sm text-muted">{{ claim.claimant.email|default:"No email provided" }}</p>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="info-row">
-                                <div class="info-icon">📧</div>
-                                <div class="info-content">
-                                    <div class="info-label">Contact Email</div>
-                                    <div class="info-value">{{ claim.claimant.email|default:"Not provided" }}</div>
-                                </div>
+                        <!-- Info Rows -->
+                        <div class="space-y-3 mb-4">
+                            <div class="flex items-center text-sm">
+                                <svg class="w-4 h-4 mr-2 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                <span class="text-muted">Location:</span>
+                                <span class="ml-2 font-medium text-dark">{{ claim.item.location }}</span>
                             </div>
-
-                            <div class="info-row">
-                                <div class="info-icon">📅</div>
-                                <div class="info-content">
-                                    <div class="info-label">Claimed On</div>
-                                    <div class="info-value">{{ claim.created_at|date:"d M Y" }} ({{ claim.created_at|timesince }} ago)</div>
-                                </div>
-                            </div>
-
-                            <div class="info-row">
-                                <div class="info-icon">📍</div>
-                                <div class="info-content">
-                                    <div class="info-label">Item Location</div>
-                                    <div class="info-value">{{ claim.item.location }}</div>
-                                </div>
+                            <div class="flex items-center text-sm">
+                                <svg class="w-4 h-4 mr-2 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-muted">Claimed:</span>
+                                <span class="ml-2 font-medium text-dark">{{ claim.created_at|timesince }} ago</span>
                             </div>
                         </div>
 
                         {% if claim.message %}
-                        <div class="claim-message">
-                            <div class="claim-message-label">💬 Claimant's Message:</div>
-                            <div class="claim-message-text">"{{ claim.message }}"</div>
+                        <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                            <p class="text-xs text-muted mb-1">Claimant's Message</p>
+                            <p class="text-sm text-dark italic">"{{ claim.message }}"</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        {% if claim.status == 'pending' %}
+                        <div class="flex gap-3">
+                            <a href="{% url 'update_claim_status' claim.id 'approved' %}" 
+                               onclick="return confirm('Approve this claim? The claimant will be able to collect the item.')"
+                               class="flex-1 px-4 py-2.5 bg-green-600 text-white text-sm font-medium rounded-xl text-center hover:bg-green-700 transition-colors">
+                                Approve
+                            </a>
+                            <a href="{% url 'update_claim_status' claim.id 'rejected' %}" 
+                               onclick="return confirm('Reject this claim?')"
+                               class="flex-1 px-4 py-2.5 bg-red-600 text-white text-sm font-medium rounded-xl text-center hover:bg-red-700 transition-colors">
+                                Reject
+                            </a>
+                        </div>
+                        {% elif claim.status == 'approved' %}
+                        <a href="{% url 'mark_as_returned' claim.id %}" 
+                           onclick="return confirm('Mark this item as returned?')"
+                           class="block w-full px-4 py-2.5 bg-purple-600 text-white text-sm font-medium rounded-xl text-center hover:bg-purple-700 transition-colors">
+                            Mark as Returned
+                        </a>
+                        {% elif claim.status == 'returned' %}
+                        <div class="bg-green-50 rounded-xl p-4 text-center">
+                            <svg class="w-6 h-6 text-green-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p class="text-sm text-green-700 font-medium">Successfully returned to {{ claim.claimant.username }}</p>
+                        </div>
+                        {% else %}
+                        <div class="bg-gray-50 rounded-xl p-4 text-center">
+                            <p class="text-sm text-muted">This claim has been rejected</p>
                         </div>
                         {% endif %}
                     </div>
-
-                    {% if claim.status == 'pending' %}
-                        <div class="claim-actions">
-                            <a href="{% url 'update_claim_status' claim.id 'approved' %}" class="btn btn-approve" onclick="return confirm('Approve this claim? The claimant will be able to collect the item.')">
-                                ✅ Approve
-                            </a>
-                            <a href="{% url 'update_claim_status' claim.id 'rejected' %}" class="btn btn-reject" onclick="return confirm('Reject this claim? This action can be reversed later.')">
-                                ❌ Reject
-                            </a>
-                        </div>
-                    {% elif claim.status == 'approved' %}
-                        <div class="claim-actions">
-                            <a href="{% url 'mark_as_returned' claim.id %}" class="btn btn-returned" onclick="return confirm('Mark this item as returned? This will complete the process.')">
-                                🎉 Mark as Returned
-                            </a>
-                        </div>
-                    {% elif claim.status == 'returned' %}
-                        <div class="action-completed">
-                            ✅ Item successfully returned to {{ claim.claimant.username }}
-                        </div>
-                    {% else %}
-                        <div class="action-completed">
-                            This claim has been rejected
-                        </div>
-                    {% endif %}
                 </div>
-            {% empty %}
-                <div class="empty-state">
-                    <div class="empty-state-icon">⚙️</div>
-                    <h2>No Claims to Manage</h2>
-                    <p>You don't have any claims on your items yet. When someone claims your posted items, they'll appear here for your review.</p>
-                    <a href="{% url 'my_items' %}" class="empty-state-btn">View My Items</a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="bg-white rounded-2xl shadow-md p-12 text-center">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
                 </div>
-            {% endfor %}
+                <h3 class="text-xl font-semibold text-dark mb-2">No Claims to Manage</h3>
+                <p class="text-muted mb-6">When someone claims your posted items, they'll appear here for your review.</p>
+                <a href="{% url 'my_items' %}" class="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-colors">
+                    View My Items
+                </a>
+            </div>
+            {% endif %}
         </div>
-    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-400">2024 Back2You. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script>
-        // Calculate statistics
         function updateStats() {
             const claims = document.querySelectorAll('.claim-card[data-status]');
             let pending = 0, approved = 0, rejected = 0, returned = 0;
-
             claims.forEach(claim => {
                 const status = claim.dataset.status;
                 if (status === 'pending') pending++;
@@ -159,33 +247,28 @@
                 else if (status === 'rejected') rejected++;
                 else if (status === 'returned') returned++;
             });
-
             document.getElementById('pendingCount').textContent = pending;
             document.getElementById('approvedCount').textContent = approved;
             document.getElementById('rejectedCount').textContent = rejected;
             document.getElementById('returnedCount').textContent = returned;
         }
 
-        // Filter by status
         function filterByStatus(status) {
             const claims = document.querySelectorAll('.claim-card[data-status]');
             const tabs = document.querySelectorAll('.tab-btn');
-            
-            // Update active tab
-            tabs.forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-
-            // Filter claims
-            claims.forEach(claim => {
-                if (status === 'all' || claim.dataset.status === status) {
-                    claim.style.display = 'flex';
-                } else {
-                    claim.style.display = 'none';
+            tabs.forEach(tab => {
+                tab.classList.remove('tab-active', 'text-primary');
+                tab.classList.add('text-muted');
+                if (tab.dataset.filter === status) {
+                    tab.classList.add('tab-active', 'text-primary');
+                    tab.classList.remove('text-muted');
                 }
+            });
+            claims.forEach(claim => {
+                claim.style.display = (status === 'all' || claim.dataset.status === status) ? 'block' : 'none';
             });
         }
 
-        // Initialize on page load
         document.addEventListener('DOMContentLoaded', updateStats);
     </script>
 </body>

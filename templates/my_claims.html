@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/my_claims.css' %}">
+
     <script>
         tailwind.config = {
             theme: {
@@ -29,12 +31,7 @@
             }
         }
     </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .claim-card { transition: all 0.3s ease; }
-        .claim-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
-        .tab-active { border-bottom: 2px solid #0F766E; color: #0F766E; }
-    </style>
+    
 </head>
 <body class="bg-light min-h-screen">
     {% include 'navbar.html' %}

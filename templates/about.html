@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/about.css' %}">
     <script>
         tailwind.config = {
             theme: {
@@ -29,13 +30,7 @@
             }
         }
     </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .feature-card { transition: all 0.3s ease; }
-        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
-        .step-card { transition: all 0.3s ease; }
-        .step-card:hover { background-color: #F0FDFA; }
-    </style>
+    
 </head>
 <body class="bg-light min-h-screen">
     {% if user.is_authenticated %}
